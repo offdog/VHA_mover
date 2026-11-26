@@ -1,12 +1,12 @@
-# VHA_mover — CLAUDE.md
+# CGH_mover — CLAUDE.md
 
 ## Project overview
 
 Desktop GUI tool (Python / Tkinter) for moving or copying rendered image folders
-from an artist's work area into the VHA pipeline destination, with automatic
+from an artist's work area into the CGH pipeline destination, with automatic
 versioned backup of any files that would be overwritten.
 
-Single-file project: `VHA_mover.py`
+Main implementation: `CGH_mover.py`; standalone Windows build: `dist/CGH_mover.exe`
 
 ---
 
@@ -14,8 +14,8 @@ Single-file project: `VHA_mover.py`
 
 | Role | Root |
 |---|---|
-| Pipeline base (destination root) | `S:\ANIMA\projects\VHA\pipeline\shots2d` |
-| Typical source (artist work) | `S:\ANIMA\projects\VHA\Work\shots\...` |
+| Pipeline base (destination root) | `S:\ANIMA\projects\CGH\pipeline\shots2d` |
+| Typical source (artist work) | `S:\ANIMA\projects\CGH\Work\shots\...` |
 
 ### Destination path structure
 
@@ -37,7 +37,7 @@ Single-file project: `VHA_mover.py`
 {WORK_BASE}\{ep}\{shot}\{cut}\lighting\{type}\{username}\maya\images\{version}
 ```
 
-`{WORK_BASE}` = `S:\ANIMA\projects\VHA\Work\shots`. The `\maya\images` segment is
+`{WORK_BASE}` = `S:\ANIMA\projects\CGH\Work\shots`. The `\maya\images` segment is
 fixed; `ep / shot / cut / type / username / version` are picked via the cascading
 source dropdowns (each level lists real sub-folders on disk). `{version}` is the
 `v###` render folder under `maya\images`.
@@ -73,7 +73,7 @@ Defined at module level. Each entry is `(display_label, folder_name)`.
 | `build_src_images(ep, shot, cut, type_folder, username)` | Constructs the `...\maya\images` folder that holds the version sub-folders |
 | `build_src(ep, shot, cut, type_folder, username, version)` | Constructs the full source path (ends `\maya\images\{version}`) |
 | `list_subdirs(path)` | Sorted sub-folder names of `path`, or `[]` if unreachable (powers the cascading dropdowns) |
-| `load_config()` / `save_config(cfg)` | Read/write JSON config at `%APPDATA%\VHA_mover\config.json` (remembers `last_username`) |
+| `load_config()` / `save_config(cfg)` | Read/write JSON config at `%APPDATA%\CGH_mover\config.json` (remembers `last_username`) |
 
 ---
 
@@ -117,7 +117,7 @@ the selected path. If the path contains `\lighting\{TYPE}\`, the TypeSelector
 is automatically switched to that type and the destination path is recalculated.
 A `\lighting\default\` segment is detected and mapped to `chara`.
 
-Detection uses regex `[/\\]lighting[/\\]([^/\\]+)` — exact segment match, so
+Detection uses regex `[/\\]lighting[/\\]([^/\\]+)` — matches the type segment case-insensitively, so casing variants are accepted and
 `bgChaShw` and `bg` are never confused.
 
 ---
@@ -128,13 +128,19 @@ Detection uses regex `[/\\]lighting[/\\]([^/\\]+)` — exact segment match, so
 - `SKIP_FOLDERS = {"asset_tracking"}` — always excluded from move/copy/backup.
 - Do not add new PATH_TYPES without updating `PATH_TYPES` at the top of the file
   (it drives both the UI and the detection validation).
-- Version is stored in `VERSION` constant at the top of `VHA_mover.py`.
+- Version is stored in `VERSION` constant at the top of `CGH_mover.py`.
   Increment `1.02 → 1.03 → 1.04` for every feature or bug fix, and add a
   changelog entry here at the same time.
 
 ---
 
 ## Changelog
+
+### CGH build
+- Main implementation: `CGH_mover.py`; pipeline roots point to the CGH project
+- Config is stored at `%APPDATA%\CGH_mover\config.json`
+- Source type matching is case-insensitive; preserve actual source folder spelling, but use canonical PATH_TYPES spelling for destinations (`Chara` maps to `chara`; `BG` and `Bg` map to `bg`)
+- Build the standalone Windows executable with `python -m PyInstaller --onefile --windowed --name CGH_mover CGH_mover.py`; output is `dist/CGH_mover.exe`
 
 ### v1.08 - 2026-06-02
 - Added `fx` and `effect` render types between `bgChaShw` and `interact`
@@ -187,7 +193,7 @@ Detection uses regex `[/\\]lighting[/\\]([^/\\]+)` — exact segment match, so
 - Version number shown in window title
 
 ### v1.01 — 2026-05-12
-- Initial release: move/copy rendered frames to VHA pipeline destination
+- Initial release: move/copy rendered frames to CGH pipeline destination
 - Versioned backup of duplicate files
 - TypeSelector pill-group, MOVE/COPY and Backup ON/OFF toggles
 - ep / shot / cut auto-parsed from source path

@@ -1,6 +1,6 @@
-# VHA_mover v1.08
+# CGH_mover v1.08
 
-Desktop GUI tool for moving or copying rendered image folders from an artist's work area into the VHA pipeline destination, with automatic versioned backup of any files that would be overwritten.
+Desktop GUI tool for moving or copying rendered image folders from an artist's work area into the CGH pipeline destination, with automatic versioned backup of any files that would be overwritten.
 
 ## Requirements
 
@@ -10,7 +10,15 @@ Desktop GUI tool for moving or copying rendered image folders from an artist's w
 ## Usage
 
 ```
-python VHA_mover.py
+python CGH_mover.py
+```
+
+Or run the packaged Windows executable: `dist/CGH_mover.exe`.
+
+To rebuild the executable, install PyInstaller and run:
+
+```
+python -m PyInstaller --onefile --windowed --name CGH_mover CGH_mover.py
 ```
 
 1. **Pick shot** — choose `ep → shot → cut → type → user → v` from the cascading dropdowns
@@ -26,8 +34,8 @@ python VHA_mover.py
 
 | Role | Path |
 |---|---|
-| Destination root | `S:\ANIMA\projects\VHA\pipeline\shots2d` |
-| Typical source | `S:\ANIMA\projects\VHA\Work\shots\...` |
+| Destination root | `S:\ANIMA\projects\CGH\pipeline\shots2d` |
+| Typical source | `S:\ANIMA\projects\CGH\Work\shots\...` |
 
 ### Destination structure
 
@@ -49,17 +57,22 @@ python VHA_mover.py
 {WORK_BASE}\{ep}\{shot}\{cut}\lighting\{type}\{username}\maya\images\{version}
 ```
 
-`{WORK_BASE}` = `S:\ANIMA\projects\VHA\Work\shots`; the `\maya\images` segment is fixed and
+`{WORK_BASE}` = `S:\ANIMA\projects\CGH\Work\shots`; the `\maya\images` segment is fixed and
 `{version}` is the `v###` render folder under it.
 
 ## Changelog
+
+### CGH build
+- Project paths and app configuration use the CGH roots and `CGH_mover` settings folder
+- Accepts case variants such as `Chara`, `BG`, and `Bg` in source folder names; destination types use canonical names
+- Packaged Windows executable is available at `dist/CGH_mover.exe`
 
 ### v1.08 - 2026-06-02
 - Added `fx` and `effect` render types between `bgChaShw` and `interact`
 
 ### v1.07 — 2026-05-29
 - Source input replaced with cascading dropdowns (`ep → shot → cut → type → user → v`) that list real folders on disk; `\maya\images` appended automatically, with the version (`v###`) folder as the 6th level (latest auto-selected)
-- Last source selection (`ep/shot/cut/type/user`) remembered and **restored automatically on launch** (stored in `%APPDATA%\VHA_mover\config.json`); version stays latest
+- Last source selection (`ep/shot/cut/type/user`) remembered and **restored automatically on launch** (stored in `%APPDATA%\CGH_mover\config.json`); version stays latest
 - Source type `default` is selectable and maps to destination type `chara`
 - **📂 Open** button in the SOURCE header opens the selected source folder in Explorer
 - Custom window/taskbar icon (folder + down-arrow, embedded — no external file)
@@ -90,7 +103,7 @@ python VHA_mover.py
 - Version number shown in window title
 
 ### v1.01 — 2026-05-12
-- Initial release: move/copy rendered frames to VHA pipeline destination
+- Initial release: move/copy rendered frames to CGH pipeline destination
 - Versioned backup of duplicate files
 - TypeSelector pill-group, MOVE/COPY and Backup ON/OFF toggles
 - ep / shot / cut auto-parsed from source path
